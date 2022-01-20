@@ -1,0 +1,80 @@
+name: Visual Studio Extension for DxLib Windows Desktop
+
+on:
+  [ push, pull_request ]
+
+jobs:
+
+  build:
+    strategy:
+        matrix:
+          config:
+            - name: vs2022
+              runs-on: windows-2022
+              msbuild-path: "C:\\Program Files\\Microsoft Visual Studio\\2022\\Enterprise\\MSBuild\\Current\\bin"
+
+    if: ${{ !contains(github.event.head_commit.message, '[ci skip]') }}
+    runs-on: ${{ matrix.config.runs-on }}
+
+    env:
+      Solution_Name: DxLibTemplate.sln
+      MSBuild_Path: ${{ matrix.config.msbuild-path }}
+
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
+
+    - name: Setup Nuget
+      uses: nuget/setup-nuget@v1
+      with:
+        nuget-version: '5.x'
+
+    - name: Restore Nuget package
+      run: nuget restore $env:Solution_Name
+      
+    - name: Build the application
+      run: |
+        Set-Item Env:Path "$env:MSBuild_Path;$env:Path"
+        msbuild $env:Solution_Name /p:Configuration="Release"
+    
+    - name: Save Build.Definition Bundles
+      uses: actions/upload-artifact@v2
+      with:
+        name: DxLib.Template.${{ matrix.config.name }}
+        path: .\DxLibProjectPackage\bin\${{ matrix.config.config-name }}\*.vsix  
+ 
+  deploy:
+
+    if: ${{ contains(github.ref, 'tags/v') }}
+    needs: build
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Restore Bundles
+        uses: actions/download-artifact@v2
+        with:
+          name: DxLib.Template.vs2022
+          path: .
+
+      - name: Create release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ github.ref }}
+
+      - name: Upload Release Asset
+        id: upload-package
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: DxLibProjectPackage.vsix
+          asset_name: DxLibProjectPackage.vsix
+          asset_content_type: application/vsix
