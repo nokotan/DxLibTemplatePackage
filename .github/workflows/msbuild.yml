@@ -44,7 +44,7 @@ jobs:
       uses: actions/upload-artifact@v2
       with:
         name: DxLib.Template.${{ matrix.config.name }}
-        path: .\DxLibProjectPackage\bin\${{ matrix.config.config-name }}\*.vsix  
+        path: .\DxLibProjectPackage\bin\Release\*.vsix  
  
   deploy:
 
