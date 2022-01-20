@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("DxLibProjectTemplate")]
+[assembly: AssemblyTitle("DxLibCSharpProjectTemplate")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Company")]
-[assembly: AssemblyProduct("DxLibProjectTemplate")]
+[assembly: AssemblyProduct("DxLibCSharpProjectTemplate")]
 [assembly: AssemblyCopyright("Copyright © Company 2022")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("4155b662-ecfc-404f-86cc-537e13304062")]
+[assembly: Guid("0781B1E3-24C1-4274-A9BE-D0CB4D783604")]
 
 // Version information for an assembly consists of the following four values:
 //
