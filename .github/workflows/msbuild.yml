@@ -98,6 +98,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: DxLibSharpProjectPackage.vsix
-          asset_name: DxLibSharpProjectPackage.vsix
+          asset_path: DxLibCSharpProjectPackage.vsix
+          asset_name: DxLibCSharpProjectPackage.vsix
           asset_content_type: application/vsix
