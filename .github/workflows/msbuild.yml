@@ -92,7 +92,7 @@ jobs:
           path: .
 
       - name: Upload Release Asset (C#)
-        id: upload-package
+        id: upload-package-csharp
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
