@@ -40,11 +40,17 @@ jobs:
         Set-Item Env:Path "$env:MSBuild_Path;$env:Path"
         msbuild $env:Solution_Name /p:Configuration="Release"
     
-    - name: Save Build.Definition Bundles
+    - name: Save Package
       uses: actions/upload-artifact@v2
       with:
         name: DxLib.Template.${{ matrix.config.name }}
         path: .\DxLibProjectPackage\bin\Release\*.vsix  
+
+    - name: Save Package (C#)
+      uses: actions/upload-artifact@v2
+      with:
+        name: DxLib.CSharp.Template.${{ matrix.config.name }}
+        path: .\DxLibCSharpProjectPackage\bin\Release\*.vsix  
  
   deploy:
 
@@ -53,12 +59,6 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Restore Bundles
-        uses: actions/download-artifact@v2
-        with:
-          name: DxLib.Template.vs2022
-          path: .
-
       - name: Create release
         id: create_release
         uses: actions/create-release@v1
@@ -67,6 +67,12 @@ jobs:
         with:
           tag_name: ${{ github.ref }}
           release_name: Release ${{ github.ref }}
+
+      - name: Restore Bundles
+        uses: actions/download-artifact@v2
+        with:
+          name: DxLib.Template.vs2022
+          path: .
 
       - name: Upload Release Asset
         id: upload-package
@@ -77,4 +83,21 @@ jobs:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
           asset_path: DxLibProjectPackage.vsix
           asset_name: DxLibProjectPackage.vsix
+          asset_content_type: application/vsix
+
+      - name: Restore Bundles (C#)
+        uses: actions/download-artifact@v2
+        with:
+          name: DxLib.CSharp.Template.vs2022
+          path: .
+
+      - name: Upload Release Asset (C#)
+        id: upload-package
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: DxLibSharpProjectPackage.vsix
+          asset_name: DxLibSharpProjectPackage.vsix
           asset_content_type: application/vsix
